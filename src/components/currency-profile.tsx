@@ -13,7 +13,7 @@ export function CurrencyProfile({
 }: CurrencyProfileProps) {
   const currency = currencies[code]
   const country = currency.countries[0]
-  const srcString = removeAccent(country).replace(/\W/g, "-")
+  const srcString = removeAccent(country).replace(/\W/g, "-").toLowerCase()
   return (
     <Flex alignItems="center" {...rest}>
       <Box position="relative" marginX="1rem">
