@@ -13,7 +13,7 @@ import { removeAccent } from "../utils/remove-accent"
 import { useRouter } from "next/router"
 import { CurrencyProfile } from "../components/currency-profile"
 import { useCurrenciesContext } from "../contexts/currencies.context"
-import { KeyboardEvent, useState } from "react"
+import { useState } from "react"
 import { debounce } from "../utils/debounce"
 const currencyCodes = Object.keys(currencies)
 function getIdByValue(value: string) {
@@ -33,7 +33,7 @@ export default function () {
   const { setCurrencyCode } = useCurrenciesContext()
   const [selectedCurrencyCode, setSelectedCurrencyCode] = useState("")
   return (
-    <>
+    <Box>
       <Flex padding="1rem" position="sticky" top="0" bg="primary" zIndex="1">
         <Center
           as="button"
@@ -100,6 +100,9 @@ export default function () {
             _selected={{
               bg: "secondary",
             }}
+            _hover={{
+              bg: "secondary",
+            }}
             data-selected={code === selectedCurrencyCode ? true : null}
           >
             <Box
@@ -110,10 +113,10 @@ export default function () {
               value={code}
               width={0}
             />
-            <CurrencyProfile code={code} pointerEvents="none" />
+            <CurrencyProfile code={code} />
           </FormLabel>
         ))}
       </Box>
-    </>
+    </Box>
   )
 }

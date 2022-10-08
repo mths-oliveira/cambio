@@ -23,9 +23,7 @@ export class Currency extends Observer<Currency> {
     super()
     this.name = currencies[code].name
     this.symbol = currencies[code].symbol
-    getCurrencyQuote(code).then((value) => {
-      this.value = value
-    })
+    this.updateValue()
   }
   get value() {
     return this._value
@@ -33,5 +31,10 @@ export class Currency extends Observer<Currency> {
   private set value(value: number) {
     this._value = value
     this.notifyAll(this)
+  }
+  updateValue() {
+    getCurrencyQuote(this.code).then((value) => {
+      this.value = value
+    })
   }
 }

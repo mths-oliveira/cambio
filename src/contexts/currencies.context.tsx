@@ -1,3 +1,4 @@
+import Cookies from "js-cookie"
 import {
   createContext,
   ReactNode,
@@ -18,14 +19,14 @@ interface Props {
   children: ReactNode
 }
 
-const initialCurrencyCode = "BRL"
-const initialCurrency = new Currency(initialCurrencyCode)
 export function CurrenciesContextProvider({ children }: Props) {
-  const [currencyCode, setCurrencyCode] = useState(initialCurrencyCode)
-  const [currency, setCurrency] = useState(initialCurrency)
+  const [currencyCode, setCurrencyCode] = useState("")
+  const [currency, setCurrency] = useState<Currency>(null)
   useEffect(() => {
+    if (!currencyCode) return
     const currency = new Currency(currencyCode)
     currency.subscribe(setCurrency)
+    Cookies.set("currency-code", currencyCode)
   }, [currencyCode])
   return (
     <currenciesContext.Provider value={{ currency, setCurrencyCode }}>

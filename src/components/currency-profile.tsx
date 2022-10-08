@@ -15,7 +15,7 @@ export function CurrencyProfile({
   const country = currency.countries[0]
   const srcString = removeAccent(country).replace(/\W/g, "-").toLowerCase()
   return (
-    <Flex alignItems="center" {...rest}>
+    <Flex alignItems="center" cursor="pointer" {...rest}>
       <Box position="relative" marginX="1rem">
         <Image
           src={`/${srcString}.png`}
@@ -24,7 +24,7 @@ export function CurrencyProfile({
         />
         {children}
       </Box>
-      <Box>
+      <Box cursor="text">
         <Text fontWeight="bold">{code}</Text>
         <Text>{currency.name}</Text>
       </Box>

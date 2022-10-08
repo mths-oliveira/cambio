@@ -7,12 +7,19 @@ import { CurrencyProfile } from "../components/currency-profile"
 import { ToggleThemeButton } from "../components/toggle-theme-button"
 import { useCurrenciesContext } from "../contexts/currencies.context"
 import Link from "next/link"
+import { GetServerSideProps } from "next"
+import { Currency } from "../backend/entities/currency"
+import { getCurrencyQuote } from "../backend/services/get-currency-quote"
 
-export default function () {
-  const { currency } = useCurrenciesContext()
+interface Props {
+  lastCurrency: Currency
+}
 
+export default function ({ lastCurrency }: Props) {
+  let { currency } = useCurrenciesContext()
+  if (!currency) currency = lastCurrency
   return (
-    <>
+    <Box>
       <Flex paddingY="1rem" alignItems="center" justifyContent="space-between">
         <Link href="/currencies">
           <Box>
@@ -77,6 +84,20 @@ export default function () {
           </Text>
         </TableRow>
       </Box>
-    </>
+    </Box>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const currencyCode = ctx.req.cookies["currency-code"]
+  let lastCurrency = new Currency(currencyCode || "BRL")
+  const value = await getCurrencyQuote(currencyCode)
+  return {
+    props: {
+      lastCurrency: {
+        ...lastCurrency,
+        value,
+      },
+    },
+  }
 }
