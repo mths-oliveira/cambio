@@ -1,6 +1,6 @@
 import { Box, Text } from "@chakra-ui/react"
 import { useCurrenciesContext } from "../contexts/currencies.context"
-import { currencyMask } from "../utils/format-currency"
+import { currencyMask } from "../utils/currency-mask"
 import { TableRow } from "./table-row"
 import products from "../../products.json"
 
