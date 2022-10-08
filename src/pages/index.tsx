@@ -89,8 +89,8 @@ export default function ({ lastCurrency }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const currencyCode = ctx.req.cookies["currency-code"]
-  let lastCurrency = new Currency(currencyCode || "BRL")
+  const currencyCode = ctx.req.cookies["currency-code"] || "BRL"
+  let lastCurrency = new Currency(currencyCode)
   const value = await getCurrencyQuote(currencyCode)
   return {
     props: {
