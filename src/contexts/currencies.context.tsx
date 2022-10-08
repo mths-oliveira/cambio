@@ -26,6 +26,7 @@ export function CurrenciesContextProvider({ children }: Props) {
     if (!currencyCode) return
     const currency = new Currency(currencyCode)
     currency.subscribe(setCurrency)
+
     Cookies.set("currency-code", currencyCode)
   }, [currencyCode])
   return (
