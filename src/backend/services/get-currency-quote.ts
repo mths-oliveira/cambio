@@ -1,6 +1,6 @@
 import { api } from "../../config/api"
 
-export async function getCurrencyQuote(code: string) {
+export async function getCurrencyQuoteByCode(code: string) {
   if (code == "BRL") return 1
   const isDollarQuote = code === "USD"
   let url = "https://economia.awesomeapi.com.br/json/last/USD-BRL"

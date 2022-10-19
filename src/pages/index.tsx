@@ -1,103 +1,78 @@
-import products from "../../products.json"
-import { RepeatIcon } from "@chakra-ui/icons"
-import { Box, Flex, Icon, Text } from "@chakra-ui/react"
-import { TableRow } from "../components/table-row"
-import { currencyMask } from "../utils/currency-mask"
-import { CurrencyProfile } from "../components/currency-profile"
-import { ToggleThemeButton } from "../components/toggle-theme-button"
-import { useCurrenciesContext } from "../contexts/currencies.context"
-import Link from "next/link"
-import { GetServerSideProps } from "next"
-import { Currency } from "../backend/entities/currency"
-import { getCurrencyQuote } from "../backend/services/get-currency-quote"
+import { Modal, ModalOverlay, ModalContent, Box, Flex } from "@chakra-ui/react"
 
-interface Props {
-  lastCurrency: Currency
-}
+import { useState } from "react"
+import { TimezonesView } from "../views/timezone"
+import { ClassesView } from "../views/classes"
+import { TimezoneImp } from "../backend/models/timezone"
+import { ProductsView } from "../views/products"
+import { CurrencyController } from "../backend/controllers/currency"
+import { CurrencyView } from "../views/currency"
 
-export default function ({ lastCurrency }: Props) {
-  let { currency } = useCurrenciesContext()
-  if (!currency) currency = lastCurrency
-  return (
-    <Box>
-      <Flex paddingY="1rem" alignItems="center" justifyContent="space-between">
-        <Link href="/currencies">
-          <Box>
-            <CurrencyProfile code={currency.code}>
-              <Icon
-                as={RepeatIcon}
-                position="absolute"
-                bottom="0.25rem"
-                right="-0.25rem"
-                bg="primary"
-                height="1.5rem"
-                width="1.5rem"
-                padding="0.25rem"
-                borderRadius="full"
-              />
-            </CurrencyProfile>
-          </Box>
-        </Link>
-        <ToggleThemeButton />
-      </Flex>
-      <Box display="table">
-        <TableRow>
-          <Text>Wol</Text>
-          <Text>{currency.symbol}</Text>
-          <Text>
-            {currencyMask(products.wol.monthlyPayment / currency.value)}
-          </Text>
-        </TableRow>
-        <TableRow>
-          <Text>Multi Wol</Text>
-          <Text>{currency.symbol}</Text>
-          <Text>
-            {currencyMask(products.multiWol.monthlyPayment / currency.value)}
-          </Text>
-        </TableRow>
-        <TableRow>
-          <Text>Live - Matrícula</Text>
-          <Text>{currency.symbol}</Text>
-          <Text>
-            {currencyMask(products.live.enrolmentFee / currency.value)}
-          </Text>
-        </TableRow>
-        <TableRow>
-          <Text>Live - Mensalidade</Text>
-          <Text>{currency.symbol}</Text>
-          <Text>
-            {currencyMask(products.live.monthlyPayment / currency.value)}
-          </Text>
-        </TableRow>
-        <TableRow>
-          <Text>Multi Live - Matrícula</Text>
-          <Text>{currency.symbol}</Text>
-          <Text>
-            {currencyMask(products.multiLive.enrolmentFee / currency.value)}
-          </Text>
-        </TableRow>
-        <TableRow>
-          <Text>Multi Live - Mensalidade</Text>
-          <Text>{currency.symbol}</Text>
-          <Text>
-            {currencyMask(products.multiLive.monthlyPayment / currency.value)}
-          </Text>
-        </TableRow>
-      </Box>
-    </Box>
-  )
-}
+const currencyController = new CurrencyController()
+const initialCurrencyData = currencyController.fetchCurrencyDataByCode("BRL")
+const initialTimezone = new TimezoneImp("America/Sao_Paulo")
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const currencyCode = ctx.req.cookies["currency-code"] || "BRL"
-  let lastCurrency = new Currency(currencyCode)
-  const value = await getCurrencyQuote(currencyCode)
-  return {
-    props: {
-      lastCurrency: {
-        ...lastCurrency,
-        value,
-      },
-    },
+export default function () {
+  const [timezone, setTimezone] = useState(initialTimezone)
+  const [currencyData, setCurrencyData] = useState(initialCurrencyData)
+  const [view, setView] = useState<"timezones" | "currencies" | undefined>()
+  const isOpen = !!view
+  function onClose() {
+    setView(undefined)
   }
+  function openTimezoneModal() {
+    setView("timezones")
+  }
+  function openCurrencyModal() {
+    setView("currencies")
+  }
+  return (
+    <>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        size="full"
+        scrollBehavior="inside"
+      >
+        <ModalOverlay />
+        <ModalContent
+          bg="transparent"
+          minHeight="0"
+          maxHeight="100vh"
+          maxW="25rem"
+          overflow="hidden"
+          borderRadius="6px"
+          margin={["0", "3.5rem"]}
+          height={["100%", "calc(100% - 7rem)"]}
+        >
+          {view === "timezones" ? (
+            <TimezonesView setTimezone={setTimezone} onClose={onClose} />
+          ) : (
+            <CurrencyView setCurrency={setCurrencyData} onClose={onClose} />
+          )}
+        </ModalContent>
+      </Modal>
+      <Flex overflowX="auto" sx={{ scrollSnapType: "x mandatory" }}>
+        <Box
+          padding={{ md: "5rem 12.5rem" }}
+          flexShrink="0"
+          width="100vw"
+          sx={{ scrollSnapAlign: "start" }}
+        >
+          <ClassesView timezone={timezone} onOpen={openTimezoneModal} />
+        </Box>
+        <Box
+          padding={{ md: "5rem 12.5rem" }}
+          flexShrink="0"
+          width="100vw"
+          sx={{ scrollSnapAlign: "start" }}
+        >
+          <ProductsView
+            currencyData={currencyData}
+            onOpen={openCurrencyModal}
+          />
+        </Box>
+      </Flex>
+    </>
+  )
 }

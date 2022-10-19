@@ -133,6 +133,11 @@
     "countries": ["Austrália", "Nauru", "Quiribáti", "Tuvalu"]
   },
   "CAD": { "name": "Dólar Canadense", "symbol": "$", "countries": ["Canadá"] },
+  "HKD": {
+    "name": "Dólar de Hong Kong",
+    "symbol": "$",
+    "countries": ["Hong Kong"]
+  },
   "JMD": { "name": "Dólar Jamaicano", "symbol": "$", "countries": ["Jamaica"] },
   "NAD": { "name": "Dólar Namíbio", "symbol": "$", "countries": ["Namíbia"] },
   "NZD": {
@@ -470,6 +475,11 @@
     "name": "Vatu de Vanuatu",
     "symbol": "Vt",
     "countries": ["Vanuatu"]
+  },
+  "KPW": {
+    "name": "Won Norte-Coreano",
+    "symbol": "₩",
+    "countries": ["Coreia do Norte"]
   },
   "KRW": {
     "name": "Won Sul-Coreano",
